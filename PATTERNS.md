@@ -27,3 +27,34 @@ Açık/Kapalı Prensibi (OCP): Sistem, yeni bildirim kanalları eklemeye (geliş
 Tek Sorumluluk Prensibi (SRP): Nesne üretim işi fabrikaya, bildirim gönderim kuralları ise ilgili sınıfların kendisine bırakılarak sınıf sorumlulukları ayrıştırılmıştır.
 
 Bağımlılıkların Tersine Çevrilmesi Prensibi (DIP): Ana sistem somut sınıflara değil, genel bir "Notification" soyutlamasına bağımlı hale getirilmiştir.
+
+
+## FAZ 2 — Structural: Decorator
+
+### Nerede Kullanıldı?
+`src/decorators.py` → `EncryptionDecorator`, `LoggingDecorator`
+
+### Neden Kullanıldı?
+Mevcut bildirim sınıflarını değiştirmeden şifreleme ve loglama
+özelliği eklemek gerekiyordu. Kalıtım yerine kompozisyon tercih edildi.
+
+### Ne Kazanıldı?
+- Temel sınıflar hiç değiştirilmedi (OCP)
+- Özellikler runtime'da zincirlenebilir: sadece loglama, sadece şifreleme veya ikisi birden
+- Her decorator tek bir iş yapıyor (Single Responsibility)
+
+---
+
+## FAZ 2 — Structural: Facade
+
+### Nerede Kullanıldı?
+`src/facade.py` → `NotificationServiceFacade`
+
+### Neden Kullanıldı?
+Factory, Decorator zinciri ve gönderim adımlarını istemci kodundan
+gizlemek, sistemi tek noktadan yönetmek gerekiyordu.
+
+### Ne Kazanıldı?
+- İstemci kodu sadece `send_secure_notification()` çağırıyor
+- Alt sistemdeki değişiklikler istemciyi etkilemiyor
+- Karmaşık pipeline tek bir arayüz arkasında toplandı
