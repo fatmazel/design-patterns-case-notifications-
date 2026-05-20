@@ -58,3 +58,38 @@ gizlemek, sistemi tek noktadan yönetmek gerekiyordu.
 - İstemci kodu sadece `send_secure_notification()` çağırıyor
 - Alt sistemdeki değişiklikler istemciyi etkilemiyor
 - Karmaşık pipeline tek bir arayüz arkasında toplandı
+
+
+---
+
+## FAZ 3 — Behavioral: Observer
+
+### Nerede Kullanıldı?
+`src/observer.py` → `NotificationEventManager`, `EmailObserver`, `SMSObserver`
+
+### Neden Kullanıldı?
+Bildirim gönderildiğinde ilgili tarafların (email, SMS izleyicileri)
+otomatik haberdar edilmesi gerekiyordu. Her izleyiciyi manuel çağırmak
+yerine Observer ile olay tabanlı bir yapı kuruldu.
+
+### Ne Kazanıldı?
+- Yeni bir izleyici eklemek için mevcut koda dokunmak gerekmiyor
+- İzleyiciler runtime'da abone olup ayrılabiliyor
+- Yayıncı ile izleyiciler birbirinden bağımsız (loose coupling)
+
+---
+
+## FAZ 3 — Behavioral: Strategy
+
+### Nerede Kullanıldı?
+`src/strategy.py` → `NotificationContext`, `ImmediateSendStrategy`, `BatchSendStrategy`
+
+### Neden Kullanıldı?
+Farklı gönderim ihtiyaçları vardı: bazı bildirimler anında
+gönderilmeli, bazıları ise biriktirilip toplu gönderilmeliydi.
+Bu davranışı if-else ile değil, değiştirilebilir strateji ile çözdük.
+
+### Ne Kazanıldı?
+- Gönderim stratejisi runtime'da değiştirilebiliyor
+- Yeni strateji eklemek için mevcut koda dokunmak gerekmiyor
+- Her strateji tek bir sorumluluğa sahip (SRP)
